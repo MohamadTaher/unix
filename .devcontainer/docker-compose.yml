@@ -1,0 +1,27 @@
+# .devcontainer/docker-compose.yml
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+    volumes:
+      - ..:/workspace:cached
+    # Connect to the SQL Server container via the hostname "db"
+    depends_on:
+      - db
+
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      ACCEPT_EULA: Y
+      SA_PASSWORD: "YourStrong!Passw0rd"
+      MSSQL_PID: Express # Free edition
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlvolume:/var/opt/mssql # Persist data
+
+volumes:
+  sqlvolume:
